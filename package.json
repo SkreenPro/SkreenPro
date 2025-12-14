@@ -1,0 +1,28 @@
+{
+  "name": "sshot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "electron.js",
+  "scripts": {
+    "dev": "NODE_ENV=development concurrently \"vite\" \"electron .\"",
+    "build": "vite build",
+    "electron": "electron .",
+    "dist": "npm run build && electron-builder"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@vitejs/plugin-react": "^5.1.2",
+    "concurrently": "^9.2.1",
+    "electron": "^39.2.7",
+    "electron-builder": "^26.0.12",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "vite": "^7.2.7"
+  },
+  "dependencies": {
+    "lucide-react": "^0.561.0"
+  }
+}
