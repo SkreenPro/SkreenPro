@@ -1,11 +1,13 @@
 import { useRef, useEffect, useState } from 'react';
 import { Stage, Layer, Image as KonvaImage, Rect } from 'react-konva';
 import useImage from 'use-image';
+import Konva from 'konva';
+import { ImageCanvasProps, GradientPreset, ShadowSettings, ShadowPreset } from '@/renderer/types';
 
 const BG_IMAGE_URL = '/bg.jpeg';
 
 // Gradient presets with Konva-compatible format
-const GRADIENT_PRESETS = {
+const GRADIENT_PRESETS: Record<string, GradientPreset> = {
   'linear-gradient(135deg, #667eea 0%, #764ba2 100%)': {
     type: 'linear',
     start: { x: 0, y: 0 },
@@ -27,7 +29,7 @@ const GRADIENT_PRESETS = {
 };
 
 // Shadow presets
-const SHADOW_PRESETS = {
+const SHADOW_PRESETS: Record<ShadowPreset, ShadowSettings> = {
   light: {
     blur: 10,
     offsetX: 0,
@@ -66,13 +68,13 @@ const SHADOW_PRESETS = {
   }
 };
 
-const ImageCanvas = ({ imageSrc, settings, onExport }) => {
-  const stageRef = useRef();
-  const containerRef = useRef();
+const ImageCanvas: React.FC<ImageCanvasProps> = ({ imageSrc, settings, onExport }) => {
+  const stageRef = useRef<Konva.Stage>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const [image] = useImage(imageSrc);
   const [bgImage] = useImage(BG_IMAGE_URL);
-  const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
-  const [scale, setScale] = useState(1);
+  const [dimensions, setDimensions] = useState<{ width: number; height: number }>({ width: 800, height: 600 });
+  const [scale, setScale] = useState<number>(1);
 
   useEffect(() => {
     if (image) {
@@ -135,7 +137,7 @@ const ImageCanvas = ({ imageSrc, settings, onExport }) => {
   } = settings;
 
   // Get shadow settings
-  const shadowSettings = shadow ? SHADOW_PRESETS[shadowPreset] : null;
+  const shadowSettings: ShadowSettings | null = shadow ? SHADOW_PRESETS[shadowPreset] : null;
 
   // Image dimensions with border and padding
   const imageWidth = dimensions.width;
@@ -160,14 +162,14 @@ const ImageCanvas = ({ imageSrc, settings, onExport }) => {
   const isGradient = GRADIENT_PRESETS[backgroundColor];
   const isBgImage = backgroundColor === 'bg-image';
 
-  const getFillProp = () => {
+  const getFillProp = (): string | null => {
     if (backgroundColor === 'transparent') return null;
     if (isGradient) return null; // We'll use fillLinearGradient instead
     if (isBgImage) return null; // We'll use fillPatternImage instead
     return backgroundColor;
   };
 
-  const getGradientProps = () => {
+  const getGradientProps = (): any => {
     if (!isGradient) return {};
 
     const gradient = GRADIENT_PRESETS[backgroundColor];
@@ -184,7 +186,7 @@ const ImageCanvas = ({ imageSrc, settings, onExport }) => {
     };
   };
 
-  const getBgImageProps = () => {
+  const getBgImageProps = (): any => {
     if (!isBgImage || !bgImage) return {};
 
     return {
