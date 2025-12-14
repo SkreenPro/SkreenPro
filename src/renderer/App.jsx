@@ -1,11 +1,21 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { FolderOpen, Save } from 'lucide-react';
+import ImageCanvas from './components/ImageCanvas';
+import EditorControls from './components/EditorControls';
 import './App.css';
 
 function App() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [filename, setFilename] = useState('');
-  const [showBackground, setShowBackground] = useState(false);
+  const stageRef = useRef(null);
+  const [settings, setSettings] = useState({
+    borderWidth: 8,
+    borderColor: '#000000',
+    borderRadius: 12,
+    backgroundColor: 'transparent',
+    padding: 40,
+    shadow: true,
+  });
 
   const handleOpenImage = async () => {
     if (window.electronAPI) {
@@ -18,14 +28,25 @@ function App() {
   };
 
   const handleSaveImage = async () => {
-    if (window.electronAPI && selectedImage) {
-      const result = await window.electronAPI.saveImage(selectedImage);
+    if (window.electronAPI && stageRef.current) {
+      // Export canvas as base64 image
+      const dataURL = stageRef.current.toDataURL({
+        mimeType: 'image/png',
+        quality: 1,
+        pixelRatio: 2, // Higher quality export
+      });
+
+      const result = await window.electronAPI.saveImage(dataURL);
       if (result.success) {
         alert('Image saved successfully!');
       } else {
         alert('Failed to save image');
       }
     }
+  };
+
+  const handleExportRef = (ref) => {
+    stageRef.current = ref.current;
   };
 
   return (
@@ -43,12 +64,6 @@ function App() {
                 <Save size={20} />
                 Save
               </button>
-              <button
-                onClick={() => setShowBackground(!showBackground)}
-                className={`toolbar-btn ${showBackground ? 'active' : ''}`}
-              >
-                {showBackground ? 'Hide Background' : 'Show Background'}
-              </button>
             </>
           )}
         </div>
@@ -57,11 +72,18 @@ function App() {
       <div className="content">
         {selectedImage ? (
           <div className="editor">
-            <div className="editor-info">
-              <span className="filename">{filename}</span>
+            <div className="editor-sidebar">
+              <div className="editor-info">
+                <span className="filename">{filename}</span>
+              </div>
+              <EditorControls settings={settings} onChange={setSettings} />
             </div>
-            <div className={`canvas-container ${showBackground ? 'with-background' : ''}`}>
-              <img src={selectedImage} alt="Editing" className="screenshot" />
+            <div className="canvas-container">
+              <ImageCanvas
+                imageSrc={selectedImage}
+                settings={settings}
+                onExport={handleExportRef}
+              />
             </div>
           </div>
         ) : (

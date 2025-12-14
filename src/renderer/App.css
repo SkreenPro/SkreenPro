@@ -208,14 +208,21 @@ body {
 .editor {
   flex: 1;
   display: flex;
-  flex-direction: column;
+  gap: 20px;
   overflow: hidden;
+  height: 100%;
+}
+
+.editor-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .editor-info {
   padding: 1rem 1.5rem;
   background: #2d2d2d;
-  border-bottom: 1px solid #3d3d3d;
+  border-radius: 8px;
 }
 
 .filename {
@@ -264,37 +271,16 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #1a1a1a;
-  padding: 2rem;
+  background:
+    repeating-conic-gradient(#2d2d2d 0% 25%, #1e1e1e 0% 50%)
+    50% / 20px 20px;
+  border-radius: 8px;
   overflow: auto;
   position: relative;
 }
 
-.canvas-container.with-background {
-  background-image: url('/bg.jpeg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-
-.canvas-container.with-background::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: 8px;
-  pointer-events: none;
-}
-
-.screenshot {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-  border-radius: 8px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-  position: relative;
-  z-index: 1;
+.canvas-wrapper {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
 }
