@@ -187,25 +187,29 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({ imageSrc, settings, onExport 
   const maxDisplayWidth = canvasWidth - (padding * 2 + borderWidth * 2 + totalShadowWidth);
   const maxDisplayHeight = canvasHeight - (padding * 2 + borderWidth * 2 + totalShadowHeight);
 
-  // Crop dimensions match canvas dimensions (aspect ratio already applied to canvas)
-  const cropWidth = dimensions.width;
-  const cropHeight = dimensions.height;
+  // Image should maintain its ORIGINAL aspect ratio, not be cropped to canvas ratio
+  // Use original image dimensions for crop (no cropping based on aspect ratio)
+  const cropWidth = image?.width || dimensions.width;
+  const cropHeight = image?.height || dimensions.height;
 
-  // Calculate display dimensions - fit the image into available space while maintaining aspect ratio
+  // Calculate display dimensions - fit the ORIGINAL image aspect ratio into available space
   let imageWidth = maxDisplayWidth;
   let imageHeight = maxDisplayHeight;
 
-  const canvasRatio = canvasWidth / canvasHeight;
-  const availableRatio = maxDisplayWidth / maxDisplayHeight;
+  if (image) {
+    // Original image aspect ratio
+    const imageRatio = image.width / image.height;
+    const availableRatio = maxDisplayWidth / maxDisplayHeight;
 
-  if (availableRatio > canvasRatio) {
-    // Available space is wider, fit to height
-    imageHeight = maxDisplayHeight;
-    imageWidth = imageHeight * canvasRatio;
-  } else {
-    // Available space is taller, fit to width
-    imageWidth = maxDisplayWidth;
-    imageHeight = imageWidth / canvasRatio;
+    if (availableRatio > imageRatio) {
+      // Available space is wider than image, fit to height
+      imageHeight = maxDisplayHeight;
+      imageWidth = imageHeight * imageRatio;
+    } else {
+      // Available space is taller than image, fit to width
+      imageWidth = maxDisplayWidth;
+      imageHeight = imageWidth / imageRatio;
+    }
   }
 
   // Position the image at the center of the canvas
