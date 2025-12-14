@@ -1,4 +1,4 @@
-import { EditorControlsProps, BackgroundPreset } from '@/renderer/types';
+import { EditorControlsProps, BackgroundPreset, AspectRatioPreset } from '@/renderer/types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/renderer/components/ui/tabs';
 import { Slider } from '@/renderer/components/ui/slider';
 import { Label } from '@/renderer/components/ui/label';
@@ -18,6 +18,25 @@ const EditorControls: React.FC<EditorControlsProps> = ({ settings, onChange }) =
     { name: 'Gradient Blue', value: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' },
     { name: 'Gradient Pink', value: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)' },
     { name: 'Gradient Green', value: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)' },
+  ];
+
+  const aspectRatioPresets: AspectRatioPreset[] = [
+    { name: 'Free', value: 'free', ratio: null },
+    { name: '16:9', value: '16:9', ratio: 16 / 9 },
+    { name: '9:16', value: '9:16', ratio: 9 / 16 },
+    { name: '4:3', value: '4:3', ratio: 4 / 3 },
+    { name: '5:4', value: '5:4', ratio: 5 / 4 },
+    { name: '1:1', value: '1:1', ratio: 1 },
+    { name: '4:5', value: '4:5', ratio: 4 / 5 },
+    { name: '3:4', value: '3:4', ratio: 3 / 4 },
+    { name: '2:3', value: '2:3', ratio: 2 / 3 },
+  ];
+
+  const socialMediaPresets: AspectRatioPreset[] = [
+    { name: 'IG Post', value: 'ig-post', ratio: 1 },
+    { name: 'IG Portrait', value: 'ig-portrait', ratio: 4 / 5 },
+    { name: 'IG Story', value: 'ig-story', ratio: 9 / 16 },
+    { name: 'Tweet', value: 'tweet', ratio: 16 / 9 },
   ];
 
   return (
@@ -129,6 +148,47 @@ const EditorControls: React.FC<EditorControlsProps> = ({ settings, onChange }) =
                   max={100}
                   step={1}
                 />
+              </div>
+            </div>
+
+            <div className="h-px bg-border" />
+
+            {/* Frame (Aspect Ratio) */}
+            <div className="space-y-4">
+              <h3 className="text-xs font-bold uppercase tracking-wide text-foreground/80">Frame</h3>
+              <div className="space-y-3">
+                <div>
+                  <Label className="text-xs font-medium text-muted-foreground mb-2.5 block">Aspect Ratio</Label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {aspectRatioPresets.map((preset) => (
+                      <Button
+                        key={preset.value}
+                        variant={settings.aspectRatio === preset.value ? 'default' : 'outline'}
+                        size="sm"
+                        onClick={() => handleChange('aspectRatio', preset.value)}
+                        className="text-xs h-9"
+                      >
+                        {preset.name}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <Label className="text-xs font-medium text-muted-foreground mb-2.5 block">Social Media</Label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {socialMediaPresets.map((preset) => (
+                      <Button
+                        key={preset.value}
+                        variant={settings.aspectRatio === preset.value ? 'default' : 'outline'}
+                        size="sm"
+                        onClick={() => handleChange('aspectRatio', preset.value)}
+                        className="text-xs h-9"
+                      >
+                        {preset.name}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
 

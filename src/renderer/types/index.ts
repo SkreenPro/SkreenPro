@@ -6,9 +6,16 @@ export interface EditorSettings {
   padding: number;
   shadow: boolean;
   shadowPreset: ShadowPreset;
+  aspectRatio: string | null;
 }
 
 export type ShadowPreset = 'light' | 'medium' | 'heavy' | 'soft' | 'sharp' | 'dramatic';
+
+export interface AspectRatioPreset {
+  name: string;
+  value: string;
+  ratio: number | null;
+}
 
 export interface ShadowSettings {
   blur: number;

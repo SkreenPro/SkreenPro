@@ -28,6 +28,7 @@ function App() {
     padding: 40,
     shadow: false,
     shadowPreset: 'medium',
+    aspectRatio: null,
   });
 
   const handleOpenImage = async () => {

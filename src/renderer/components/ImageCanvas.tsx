@@ -78,9 +78,43 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({ imageSrc, settings, onExport 
 
   useEffect(() => {
     if (image) {
-      setDimensions({ width: image.width, height: image.height });
+      let width = image.width;
+      let height = image.height;
+
+      // Apply aspect ratio if set
+      if (settings.aspectRatio && settings.aspectRatio !== 'free') {
+        const aspectRatioMap: Record<string, number> = {
+          '16:9': 16 / 9,
+          '9:16': 9 / 16,
+          '4:3': 4 / 3,
+          '5:4': 5 / 4,
+          '1:1': 1,
+          '4:5': 4 / 5,
+          '3:4': 3 / 4,
+          '2:3': 2 / 3,
+          'ig-post': 1,
+          'ig-portrait': 4 / 5,
+          'ig-story': 9 / 16,
+          'tweet': 16 / 9,
+        };
+
+        const targetRatio = aspectRatioMap[settings.aspectRatio];
+        if (targetRatio) {
+          const currentRatio = width / height;
+
+          if (currentRatio > targetRatio) {
+            // Image is wider, adjust width to match target ratio
+            width = height * targetRatio;
+          } else {
+            // Image is taller, adjust height to match target ratio
+            height = width / targetRatio;
+          }
+        }
+      }
+
+      setDimensions({ width, height });
     }
-  }, [image]);
+  }, [image, settings.aspectRatio]);
 
   // Handle responsive scaling
   useEffect(() => {
@@ -143,20 +177,24 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({ imageSrc, settings, onExport 
   const imageWidth = dimensions.width;
   const imageHeight = dimensions.height;
 
-  // Calculate extra space needed for shadow
-  const shadowSpace = shadowSettings ? Math.max(
-    shadowSettings.blur + Math.abs(shadowSettings.offsetY),
-    shadowSettings.blur + Math.abs(shadowSettings.offsetX)
-  ) : 0;
+  // Calculate extra space needed for shadow on each side
+  const shadowSpaceLeft = shadowSettings ? Math.max(0, shadowSettings.blur - shadowSettings.offsetX) : 0;
+  const shadowSpaceRight = shadowSettings ? Math.max(0, shadowSettings.blur + shadowSettings.offsetX) : 0;
+  const shadowSpaceTop = shadowSettings ? Math.max(0, shadowSettings.blur - shadowSettings.offsetY) : 0;
+  const shadowSpaceBottom = shadowSettings ? Math.max(0, shadowSettings.blur + shadowSettings.offsetY) : 0;
+
+  // Total shadow space on each axis
+  const totalShadowWidth = shadowSpaceLeft + shadowSpaceRight;
+  const totalShadowHeight = shadowSpaceTop + shadowSpaceBottom;
 
   // Total canvas includes padding for background and shadow space
-  const totalPadding = padding * 2;
-  const canvasWidth = imageWidth + totalPadding + borderWidth * 2 + shadowSpace * 2;
-  const canvasHeight = imageHeight + totalPadding + borderWidth * 2 + shadowSpace * 2;
+  const canvasWidth = imageWidth + padding * 2 + borderWidth * 2 + totalShadowWidth;
+  const canvasHeight = imageHeight + padding * 2 + borderWidth * 2 + totalShadowHeight;
 
-  // Position of the image (centered with padding and shadow space)
-  const imageX = padding + shadowSpace;
-  const imageY = padding + shadowSpace;
+  // Position the image at the center of the canvas
+  // The center should be independent of shadow direction
+  const imageX = (canvasWidth - imageWidth) / 2;
+  const imageY = (canvasHeight - imageHeight) / 2;
 
   // Check background type
   const isGradient = GRADIENT_PRESETS[backgroundColor];
@@ -230,6 +268,12 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({ imageSrc, settings, onExport 
                 y={imageY}
                 width={imageWidth}
                 height={imageHeight}
+                crop={{
+                  x: (image.width - dimensions.width) / 2,
+                  y: (image.height - dimensions.height) / 2,
+                  width: dimensions.width,
+                  height: dimensions.height
+                }}
                 cornerRadius={borderRadius}
                 shadowEnabled={shadow && shadowSettings !== null}
                 shadowColor="black"
