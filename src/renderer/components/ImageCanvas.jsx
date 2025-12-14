@@ -2,10 +2,75 @@ import { useRef, useEffect, useState } from 'react';
 import { Stage, Layer, Image as KonvaImage, Rect } from 'react-konva';
 import useImage from 'use-image';
 
+const BG_IMAGE_URL = '/bg.jpeg';
+
+// Gradient presets with Konva-compatible format
+const GRADIENT_PRESETS = {
+  'linear-gradient(135deg, #667eea 0%, #764ba2 100%)': {
+    type: 'linear',
+    start: { x: 0, y: 0 },
+    end: { x: 1, y: 1 },
+    colorStops: [0, '#667eea', 1, '#764ba2']
+  },
+  'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)': {
+    type: 'linear',
+    start: { x: 0, y: 0 },
+    end: { x: 1, y: 1 },
+    colorStops: [0, '#f093fb', 1, '#f5576c']
+  },
+  'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)': {
+    type: 'linear',
+    start: { x: 0, y: 0 },
+    end: { x: 1, y: 1 },
+    colorStops: [0, '#4facfe', 1, '#00f2fe']
+  }
+};
+
+// Shadow presets
+const SHADOW_PRESETS = {
+  light: {
+    blur: 10,
+    offsetX: 0,
+    offsetY: 5,
+    opacity: 0.2
+  },
+  medium: {
+    blur: 20,
+    offsetX: 0,
+    offsetY: 8,
+    opacity: 0.3
+  },
+  heavy: {
+    blur: 30,
+    offsetX: 0,
+    offsetY: 12,
+    opacity: 0.4
+  },
+  soft: {
+    blur: 40,
+    offsetX: 0,
+    offsetY: 15,
+    opacity: 0.25
+  },
+  sharp: {
+    blur: 5,
+    offsetX: 0,
+    offsetY: 3,
+    opacity: 0.5
+  },
+  dramatic: {
+    blur: 50,
+    offsetX: 0,
+    offsetY: 20,
+    opacity: 0.5
+  }
+};
+
 const ImageCanvas = ({ imageSrc, settings, onExport }) => {
   const stageRef = useRef();
   const containerRef = useRef();
   const [image] = useImage(imageSrc);
+  const [bgImage] = useImage(BG_IMAGE_URL);
   const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
   const [scale, setScale] = useState(1);
 
@@ -66,11 +131,69 @@ const ImageCanvas = ({ imageSrc, settings, onExport }) => {
     backgroundColor = 'transparent',
     padding = 0,
     shadow = false,
+    shadowPreset = 'medium',
   } = settings;
 
+  // Get shadow settings
+  const shadowSettings = shadow ? SHADOW_PRESETS[shadowPreset] : null;
+
+  // Image dimensions with border and padding
+  const imageWidth = dimensions.width;
+  const imageHeight = dimensions.height;
+
+  // Calculate extra space needed for shadow
+  const shadowSpace = shadowSettings ? Math.max(
+    shadowSettings.blur + Math.abs(shadowSettings.offsetY),
+    shadowSettings.blur + Math.abs(shadowSettings.offsetX)
+  ) : 0;
+
+  // Total canvas includes padding for background and shadow space
   const totalPadding = padding * 2;
-  const canvasWidth = dimensions.width + totalPadding + borderWidth * 2;
-  const canvasHeight = dimensions.height + totalPadding + borderWidth * 2;
+  const canvasWidth = imageWidth + totalPadding + borderWidth * 2 + shadowSpace * 2;
+  const canvasHeight = imageHeight + totalPadding + borderWidth * 2 + shadowSpace * 2;
+
+  // Position of the image (centered with padding and shadow space)
+  const imageX = padding + shadowSpace;
+  const imageY = padding + shadowSpace;
+
+  // Check background type
+  const isGradient = GRADIENT_PRESETS[backgroundColor];
+  const isBgImage = backgroundColor === 'bg-image';
+
+  const getFillProp = () => {
+    if (backgroundColor === 'transparent') return null;
+    if (isGradient) return null; // We'll use fillLinearGradient instead
+    if (isBgImage) return null; // We'll use fillPatternImage instead
+    return backgroundColor;
+  };
+
+  const getGradientProps = () => {
+    if (!isGradient) return {};
+
+    const gradient = GRADIENT_PRESETS[backgroundColor];
+    return {
+      fillLinearGradientStartPoint: {
+        x: gradient.start.x * canvasWidth,
+        y: gradient.start.y * canvasHeight
+      },
+      fillLinearGradientEndPoint: {
+        x: gradient.end.x * canvasWidth,
+        y: gradient.end.y * canvasHeight
+      },
+      fillLinearGradientColorStops: gradient.colorStops
+    };
+  };
+
+  const getBgImageProps = () => {
+    if (!isBgImage || !bgImage) return {};
+
+    return {
+      fillPatternImage: bgImage,
+      fillPatternScaleX: canvasWidth / bgImage.width,
+      fillPatternScaleY: canvasHeight / bgImage.height,
+      fillPatternRepeat: 'no-repeat'
+    };
+  };
 
   return (
     <div className="canvas-wrapper" ref={containerRef}>
@@ -82,46 +205,54 @@ const ImageCanvas = ({ imageSrc, settings, onExport }) => {
         scaleY={scale}
       >
         <Layer>
-          {/* Background */}
+          {/* Background Layer - behind everything */}
           {backgroundColor !== 'transparent' && (
             <Rect
               x={0}
               y={0}
               width={canvasWidth}
               height={canvasHeight}
-              fill={backgroundColor}
-              cornerRadius={borderRadius + borderWidth}
+              fill={getFillProp()}
+              {...getGradientProps()}
+              {...getBgImageProps()}
             />
           )}
 
-          {/* Border */}
-          {borderWidth > 0 && (
-            <Rect
-              x={borderWidth / 2}
-              y={borderWidth / 2}
-              width={canvasWidth - borderWidth}
-              height={canvasHeight - borderWidth}
-              stroke={borderColor}
-              strokeWidth={borderWidth}
-              cornerRadius={borderRadius}
-            />
-          )}
-
-          {/* Image */}
+          {/* Image with border and effects */}
           {image && (
-            <KonvaImage
-              image={image}
-              x={padding + borderWidth}
-              y={padding + borderWidth}
-              width={dimensions.width}
-              height={dimensions.height}
-              cornerRadius={borderRadius}
-              shadowEnabled={shadow}
-              shadowColor="black"
-              shadowBlur={shadow ? 20 : 0}
-              shadowOffset={shadow ? { x: 0, y: 10 } : { x: 0, y: 0 }}
-              shadowOpacity={shadow ? 0.3 : 0}
-            />
+            <>
+              {/* Image */}
+              <KonvaImage
+                image={image}
+                x={imageX}
+                y={imageY}
+                width={imageWidth}
+                height={imageHeight}
+                cornerRadius={borderRadius}
+                shadowEnabled={shadow && shadowSettings !== null}
+                shadowColor="black"
+                shadowBlur={shadowSettings?.blur || 0}
+                shadowOffset={{
+                  x: shadowSettings?.offsetX || 0,
+                  y: shadowSettings?.offsetY || 0
+                }}
+                shadowOpacity={shadowSettings?.opacity || 0}
+              />
+
+              {/* Border on top of image */}
+              {borderWidth > 0 && (
+                <Rect
+                  x={imageX}
+                  y={imageY}
+                  width={imageWidth}
+                  height={imageHeight}
+                  stroke={borderColor}
+                  strokeWidth={borderWidth}
+                  cornerRadius={borderRadius}
+                  listening={false}
+                />
+              )}
+            </>
           )}
         </Layer>
       </Stage>

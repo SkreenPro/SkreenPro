@@ -7,6 +7,7 @@ const EditorControls = ({ settings, onChange }) => {
 
   const backgroundPresets = [
     { name: 'Transparent', value: 'transparent' },
+    { name: 'BG Image', value: 'bg-image' },
     { name: 'White', value: '#ffffff' },
     { name: 'Black', value: '#000000' },
     { name: 'Gradient Blue', value: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' },
@@ -88,11 +89,16 @@ const EditorControls = ({ settings, onChange }) => {
               <button
                 key={preset.name}
                 className={`preset-btn ${settings.backgroundColor === preset.value ? 'active' : ''}`}
-                style={{ background: preset.value }}
+                style={{
+                  background: preset.value === 'bg-image'
+                    ? 'url(/bg.jpeg) center/cover'
+                    : preset.value
+                }}
                 onClick={() => handleChange('backgroundColor', preset.value)}
                 title={preset.name}
               >
                 {preset.name === 'Transparent' && '⊘'}
+                {preset.name === 'BG Image' && '🖼'}
               </button>
             ))}
           </div>
@@ -100,7 +106,7 @@ const EditorControls = ({ settings, onChange }) => {
       </div>
 
       <div className="control-section">
-        <h3>Effects</h3>
+        <h3>Shadow</h3>
         <div className="control-group">
           <label className="checkbox-label">
             <input
@@ -108,8 +114,49 @@ const EditorControls = ({ settings, onChange }) => {
               checked={settings.shadow}
               onChange={(e) => handleChange('shadow', e.target.checked)}
             />
-            Drop Shadow
+            Enable Shadow
           </label>
+
+          {settings.shadow && (
+            <div className="shadow-presets">
+              <button
+                className={`shadow-preset-btn ${settings.shadowPreset === 'light' ? 'active' : ''}`}
+                onClick={() => handleChange('shadowPreset', 'light')}
+              >
+                Light
+              </button>
+              <button
+                className={`shadow-preset-btn ${settings.shadowPreset === 'medium' ? 'active' : ''}`}
+                onClick={() => handleChange('shadowPreset', 'medium')}
+              >
+                Medium
+              </button>
+              <button
+                className={`shadow-preset-btn ${settings.shadowPreset === 'heavy' ? 'active' : ''}`}
+                onClick={() => handleChange('shadowPreset', 'heavy')}
+              >
+                Heavy
+              </button>
+              <button
+                className={`shadow-preset-btn ${settings.shadowPreset === 'soft' ? 'active' : ''}`}
+                onClick={() => handleChange('shadowPreset', 'soft')}
+              >
+                Soft
+              </button>
+              <button
+                className={`shadow-preset-btn ${settings.shadowPreset === 'sharp' ? 'active' : ''}`}
+                onClick={() => handleChange('shadowPreset', 'sharp')}
+              >
+                Sharp
+              </button>
+              <button
+                className={`shadow-preset-btn ${settings.shadowPreset === 'dramatic' ? 'active' : ''}`}
+                onClick={() => handleChange('shadowPreset', 'dramatic')}
+              >
+                Dramatic
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

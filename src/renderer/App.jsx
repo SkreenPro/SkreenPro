@@ -12,9 +12,10 @@ function App() {
     borderWidth: 8,
     borderColor: '#000000',
     borderRadius: 12,
-    backgroundColor: 'transparent',
+    backgroundColor: 'bg-image',
     padding: 40,
-    shadow: true,
+    shadow: false,
+    shadowPreset: 'medium',
   });
 
   const handleOpenImage = async () => {

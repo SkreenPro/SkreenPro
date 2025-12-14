@@ -144,6 +144,37 @@
   accent-color: #007bff;
 }
 
+/* Shadow presets */
+.shadow-presets {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.shadow-preset-btn {
+  padding: 8px 12px;
+  background: #2d2d2d;
+  color: #ccc;
+  border: 2px solid #333;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.shadow-preset-btn:hover {
+  border-color: #555;
+  background: #333;
+}
+
+.shadow-preset-btn.active {
+  border-color: #007bff;
+  background: rgba(0, 123, 255, 0.1);
+  color: #007bff;
+}
+
 /* Custom scrollbar */
 .editor-controls::-webkit-scrollbar {
   width: 8px;
