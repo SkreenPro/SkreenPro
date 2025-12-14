@@ -108,7 +108,7 @@ ipcMain.handle('open-image', async () => {
 ipcMain.handle('save-image', async (event, imageData) => {
   const result = await dialog.showSaveDialog(mainWindow, {
     title: 'Save Image',
-    defaultPath: 'edited-image.png',
+    defaultPath: 'shotstudio-image.png',
     filters: [
       { name: 'PNG', extensions: ['png'] },
       { name: 'JPEG', extensions: ['jpg', 'jpeg'] },
