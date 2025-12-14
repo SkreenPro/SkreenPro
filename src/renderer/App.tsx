@@ -76,7 +76,7 @@ function App() {
           {selectedImage && (
             <Button onClick={handleSaveImage} variant="default" size="xs" className="gap-2">
               <Save size={18} />
-              Export
+              Export - 4K
             </Button>
           )}
         </div>
