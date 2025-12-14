@@ -5,6 +5,25 @@ import { Label } from '@/renderer/components/ui/label';
 import { Button } from '@/renderer/components/ui/button';
 import { Switch } from '@/renderer/components/ui/switch';
 
+// Background images from public/bgs folder
+const BG_IMAGES = [
+  'bg.JPG',
+  'bg1.jpeg',
+  'IMG_0020.JPG',
+  'IMG_0021.JPG',
+  'IMG_0022.JPG',
+  'IMG_0023.JPG',
+  'IMG_0026.JPG',
+  'IMG_0027.JPG',
+  'IMG_0028.JPG',
+  'IMG_0029.JPG',
+  'IMG_0051.JPG',
+  'IMG_9974 2.JPG',
+  'IMG_9974.JPG',
+  'IMG_9979.JPG',
+  'IMG_9987.JPG',
+];
+
 const EditorControls: React.FC<EditorControlsProps> = ({ settings, onChange }) => {
   const handleChange = (key: keyof typeof settings, value: any) => {
     onChange({ ...settings, [key]: value });
@@ -12,7 +31,6 @@ const EditorControls: React.FC<EditorControlsProps> = ({ settings, onChange }) =
 
   const backgroundPresets: BackgroundPreset[] = [
     { name: 'Transparent', value: 'transparent' },
-    { name: 'BG Image', value: 'bg-image' },
     { name: 'White', value: '#ffffff' },
     { name: 'Black', value: '#000000' },
     { name: 'Gradient Blue', value: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' },
@@ -202,13 +220,13 @@ const EditorControls: React.FC<EditorControlsProps> = ({ settings, onChange }) =
                   <Label className="text-xs font-medium text-muted-foreground">Custom Color</Label>
                   <input
                     type="color"
-                    value={settings.backgroundColor === 'transparent' || settings.backgroundColor === 'bg-image' || settings.backgroundColor.startsWith('linear-gradient') ? '#ffffff' : settings.backgroundColor}
+                    value={settings.backgroundColor === 'transparent' || settings.backgroundColor.startsWith('bg-image:') || settings.backgroundColor.startsWith('linear-gradient') ? '#ffffff' : settings.backgroundColor}
                     onChange={(e) => handleChange('backgroundColor', e.target.value)}
                     className="w-full h-11 border-2 border-input rounded-lg cursor-pointer hover:border-primary transition-colors"
                   />
                 </div>
                 <div>
-                  <Label className="text-xs font-medium text-muted-foreground mb-2.5 block">Presets</Label>
+                  <Label className="text-xs font-medium text-muted-foreground mb-2.5 block">Color Presets</Label>
                   <div className="grid grid-cols-3 gap-2.5">
                     {backgroundPresets.map((preset) => (
                       <button
@@ -220,9 +238,7 @@ const EditorControls: React.FC<EditorControlsProps> = ({ settings, onChange }) =
                         }`}
                         style={{
                           background:
-                            preset.value === 'bg-image'
-                              ? 'url(/bg.JPG) center/cover'
-                              : preset.value === 'transparent'
+                            preset.value === 'transparent'
                               ? 'repeating-conic-gradient(#404040 0% 25%, #2a2a2a 0% 50%) 50% / 10px 10px'
                               : preset.value,
                         }}
@@ -232,10 +248,27 @@ const EditorControls: React.FC<EditorControlsProps> = ({ settings, onChange }) =
                         {preset.name === 'Transparent' && (
                           <span className="absolute inset-0 flex items-center justify-center text-2xl">⊘</span>
                         )}
-                        {preset.name === 'BG Image' && (
-                          <span className="absolute inset-0 flex items-center justify-center text-xl">🖼</span>
-                        )}
                       </button>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <Label className="text-xs font-medium text-muted-foreground mb-2.5 block">Background Images</Label>
+                  <div className="grid grid-cols-3 gap-2.5">
+                    {BG_IMAGES.map((bgImage) => (
+                      <button
+                        key={bgImage}
+                        className={`h-14 border-2 rounded-lg cursor-pointer transition-all hover:scale-105 relative overflow-hidden ${
+                          settings.backgroundColor === `bg-image:${bgImage}`
+                            ? 'border-primary ring-2 ring-primary/20'
+                            : 'border-border hover:border-primary/50'
+                        }`}
+                        style={{
+                          background: `url(/bgs/${bgImage}) center/cover`,
+                        }}
+                        onClick={() => handleChange('backgroundColor', `bg-image:${bgImage}`)}
+                        title={bgImage}
+                      />
                     ))}
                   </div>
                 </div>

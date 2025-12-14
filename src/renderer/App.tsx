@@ -24,7 +24,7 @@ function App() {
     borderWidth: 8,
     borderColor: '#000000',
     borderRadius: 12,
-    backgroundColor: 'bg-image',
+    backgroundColor: 'bg-image:bg.JPG',
     padding: 40,
     shadow: false,
     shadowPreset: 'medium',
@@ -118,10 +118,9 @@ function App() {
             <div className="absolute inset-0 bg-black/50 backdrop-blur-sm z-[1]" />
             <div className="max-w-[600px] text-center relative z-[2]">
               <h2 className="text-white text-2xl font-medium mb-5">ShotStudio v1.0.1</h2>
-              <p className="text-gray-300 text-md mb-8 leading-relaxed">Open an image to start editing</p>
               <Button
                 onClick={handleOpenImage}
-                size="lg"
+                size="sm"
                 className="gap-3 shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5"
               >
                 <FolderOpen size={24} />

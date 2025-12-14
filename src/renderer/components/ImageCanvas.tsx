@@ -4,8 +4,6 @@ import useImage from 'use-image';
 import Konva from 'konva';
 import { ImageCanvasProps, GradientPreset, ShadowSettings, ShadowPreset } from '@/renderer/types';
 
-const BG_IMAGE_URL = '/bg.JPG';
-
 // Gradient presets with Konva-compatible format
 const GRADIENT_PRESETS: Record<string, GradientPreset> = {
   'linear-gradient(135deg, #667eea 0%, #764ba2 100%)': {
@@ -72,7 +70,13 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({ imageSrc, settings, onExport 
   const stageRef = useRef<Konva.Stage>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [image] = useImage(imageSrc);
-  const [bgImage] = useImage(BG_IMAGE_URL);
+
+  // Extract background image URL if it's a bg-image type
+  const bgImageUrl = settings.backgroundColor.startsWith('bg-image:')
+    ? `/bgs/${settings.backgroundColor.replace('bg-image:', '')}`
+    : null;
+  const [bgImage] = useImage(bgImageUrl || '');
+
   const [dimensions, setDimensions] = useState<{ width: number; height: number }>({ width: 800, height: 600 });
   const [scale, setScale] = useState<number>(1);
 
@@ -218,7 +222,7 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({ imageSrc, settings, onExport 
 
   // Check background type
   const isGradient = GRADIENT_PRESETS[backgroundColor];
-  const isBgImage = backgroundColor === 'bg-image';
+  const isBgImage = backgroundColor.startsWith('bg-image:');
 
   const getFillProp = (): string | null => {
     if (backgroundColor === 'transparent') return null;
