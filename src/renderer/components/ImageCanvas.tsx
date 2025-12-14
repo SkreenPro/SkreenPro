@@ -81,7 +81,7 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({ imageSrc, settings, onExport 
       let width = image.width;
       let height = image.height;
 
-      // Apply aspect ratio if set
+      // If aspect ratio is set, apply it to canvas dimensions
       if (settings.aspectRatio && settings.aspectRatio !== 'free') {
         const aspectRatioMap: Record<string, number> = {
           '16:9': 16 / 9,
@@ -125,14 +125,10 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({ imageSrc, settings, onExport 
       const containerWidth = container.clientWidth - 80; // padding
       const containerHeight = container.clientHeight - 80;
 
-      const {
-        borderWidth = 0,
-        padding = 0,
-      } = settings;
-
-      const totalPadding = padding * 2 + borderWidth * 2;
-      const fullWidth = dimensions.width + totalPadding;
-      const fullHeight = dimensions.height + totalPadding;
+      // Canvas dimensions are FIXED (original image size)
+      // Scale is calculated based only on canvas size, not padding/border
+      const fullWidth = dimensions.width;
+      const fullHeight = dimensions.height;
 
       // Calculate scale to fit container
       const scaleX = containerWidth / fullWidth;
@@ -173,10 +169,6 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({ imageSrc, settings, onExport 
   // Get shadow settings
   const shadowSettings: ShadowSettings | null = shadow ? SHADOW_PRESETS[shadowPreset] : null;
 
-  // Image dimensions with border and padding
-  const imageWidth = dimensions.width;
-  const imageHeight = dimensions.height;
-
   // Calculate extra space needed for shadow on each side
   const shadowSpaceLeft = shadowSettings ? Math.max(0, shadowSettings.blur - shadowSettings.offsetX) : 0;
   const shadowSpaceRight = shadowSettings ? Math.max(0, shadowSettings.blur + shadowSettings.offsetX) : 0;
@@ -187,12 +179,36 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({ imageSrc, settings, onExport 
   const totalShadowWidth = shadowSpaceLeft + shadowSpaceRight;
   const totalShadowHeight = shadowSpaceTop + shadowSpaceBottom;
 
-  // Total canvas includes padding for background and shadow space
-  const canvasWidth = imageWidth + padding * 2 + borderWidth * 2 + totalShadowWidth;
-  const canvasHeight = imageHeight + padding * 2 + borderWidth * 2 + totalShadowHeight;
+  // Canvas size is ALWAYS the original image dimensions (FIXED) - never changes
+  const canvasWidth = dimensions.width;
+  const canvasHeight = dimensions.height;
+
+  // Calculate the maximum available space for the DISPLAYED image after accounting for padding, border AND shadow
+  const maxDisplayWidth = canvasWidth - (padding * 2 + borderWidth * 2 + totalShadowWidth);
+  const maxDisplayHeight = canvasHeight - (padding * 2 + borderWidth * 2 + totalShadowHeight);
+
+  // Crop dimensions match canvas dimensions (aspect ratio already applied to canvas)
+  const cropWidth = dimensions.width;
+  const cropHeight = dimensions.height;
+
+  // Calculate display dimensions - fit the image into available space while maintaining aspect ratio
+  let imageWidth = maxDisplayWidth;
+  let imageHeight = maxDisplayHeight;
+
+  const canvasRatio = canvasWidth / canvasHeight;
+  const availableRatio = maxDisplayWidth / maxDisplayHeight;
+
+  if (availableRatio > canvasRatio) {
+    // Available space is wider, fit to height
+    imageHeight = maxDisplayHeight;
+    imageWidth = imageHeight * canvasRatio;
+  } else {
+    // Available space is taller, fit to width
+    imageWidth = maxDisplayWidth;
+    imageHeight = imageWidth / canvasRatio;
+  }
 
   // Position the image at the center of the canvas
-  // The center should be independent of shadow direction
   const imageX = (canvasWidth - imageWidth) / 2;
   const imageY = (canvasHeight - imageHeight) / 2;
 
@@ -269,10 +285,10 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({ imageSrc, settings, onExport 
                 width={imageWidth}
                 height={imageHeight}
                 crop={{
-                  x: (image.width - dimensions.width) / 2,
-                  y: (image.height - dimensions.height) / 2,
-                  width: dimensions.width,
-                  height: dimensions.height
+                  x: (image.width - cropWidth) / 2,
+                  y: (image.height - cropHeight) / 2,
+                  width: cropWidth,
+                  height: cropHeight
                 }}
                 cornerRadius={borderRadius}
                 shadowEnabled={shadow && shadowSettings !== null}
