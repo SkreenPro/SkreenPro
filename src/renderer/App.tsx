@@ -95,7 +95,7 @@ function App() {
     <div className="h-screen flex flex-col bg-background text-foreground">
       {/* Header */}
       <header className="px-6 py-2 bg-card border-b border-border flex justify-between items-center">
-        <h1 className="text-sm font-medium">ShotStudio v1.0.1</h1>
+        <h1 className="text-sm font-medium">SkreenPro v1.0.1</h1>
         <div className="flex gap-3 items-center">
           <span className="text-xs text-muted-foreground">{user.email}</span>
           <Button onClick={handleOpenImage} size="xs" variant="outline" className="gap-2">
@@ -150,7 +150,7 @@ function App() {
           >
             <div className="absolute inset-0 bg-black/50 backdrop-blur-sm z-[1]" />
             <div className="max-w-[600px] text-center relative z-[2]">
-              <h2 className="text-white text-2xl font-medium mb-5">ShotStudio v1.0.1</h2>
+              <h2 className="text-white text-2xl font-medium mb-5">SkreenPro v1.0.1</h2>
               <Button
                 onClick={handleOpenImage}
                 size="sm"

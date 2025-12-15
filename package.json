@@ -48,8 +48,8 @@
     "use-image": "^1.1.4"
   },
   "build": {
-    "appId": "com.shotstudio.app",
-    "productName": "ShotStudio",
+    "appId": "com.skreenpro.app",
+    "productName": "SkreenPro",
     "files": [
       "dist/**/*",
       "electron.js",

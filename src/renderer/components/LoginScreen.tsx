@@ -45,7 +45,7 @@ const LoginScreen = () => {
       <div className="max-w-[350px] w-full mx-4 relative z-[2]">
         <div className="bg-card rounded-lg p-8">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-foreground mb-2">ShotStudio</h1>
+            <h1 className="text-3xl font-bold text-foreground mb-2">SkreenPro</h1>
             <p className="text-sm text-muted-foreground">
               Sign in to start creating beautiful screenshots
             </p>
