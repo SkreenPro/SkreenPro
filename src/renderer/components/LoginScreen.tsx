@@ -42,8 +42,8 @@ const LoginScreen = () => {
       }}
     >
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm z-[1]" />
-      <div className="max-w-[450px] w-full mx-4 relative z-[2]">
-        <div className="bg-card border border-border rounded-lg p-8 shadow-2xl">
+      <div className="max-w-[350px] w-full mx-4 relative z-[2]">
+        <div className="bg-card rounded-lg p-8">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-foreground mb-2">ShotStudio</h1>
             <p className="text-sm text-muted-foreground">
@@ -55,7 +55,7 @@ const LoginScreen = () => {
             <Button
               onClick={handleGoogleLogin}
               disabled={isLoading}
-              className="w-full h-12 text-base gap-3"
+              className="w-full text-base gap-3"
               variant="outline"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -82,7 +82,7 @@ const LoginScreen = () => {
             <Button
               onClick={handleGithubLogin}
               disabled={isLoading}
-              className="w-full h-12 text-base gap-3"
+              className="w-full text-base gap-3"
               variant="outline"
             >
               <Github className="w-5 h-5" />
@@ -92,7 +92,10 @@ const LoginScreen = () => {
 
           <div className="mt-6 text-center">
             <p className="text-xs text-muted-foreground">
-              By signing in, you agree to our Terms of Service
+              By signing in, you agree to our 
+              <a href="https://skreen.pro/terms" className="underline hover:text-primary ml-1">
+              Terms of Service
+              </a>
             </p>
           </div>
         </div>
