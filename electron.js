@@ -11,6 +11,7 @@ function createWindow() {
     height: 800,
     minWidth: 800,
     minHeight: 600,
+    icon: path.join(__dirname, 'public/icons/512-mac.png'),
     webPreferences: {
       preload: path.join(__dirname, 'src/preload/preload.js'),
       nodeIntegration: false,

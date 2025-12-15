@@ -45,5 +45,23 @@
     "react-konva": "^19.2.1",
     "tailwind-merge": "^3.4.0",
     "use-image": "^1.1.4"
+  },
+  "build": {
+    "appId": "com.shotstudio.app",
+    "productName": "ShotStudio",
+    "files": [
+      "dist/**/*",
+      "electron.js",
+      "src/preload/**/*",
+      "public/**/*"
+    ],
+    "mac": {
+      "icon": "public/icons/1024-mac.png",
+      "category": "public.app-category.graphics-design",
+      "target": [
+        "dmg",
+        "zip"
+      ]
+    }
   }
 }
