@@ -1,8 +1,9 @@
 import { useState, useRef } from 'react';
-import { FolderOpen, Save, LogOut } from 'lucide-react';
+import { FolderOpen, Save, Github as GithubIcon } from 'lucide-react';
 import ImageCanvas from './components/ImageCanvas';
 import EditorControls from './components/EditorControls';
 import LoginScreen from './components/LoginScreen';
+import UserMenu from './components/UserMenu';
 // import PlanSelectionModal from './components/PlanSelectionModal'; // COMMENTED OUT: Future feature
 // import LicenseKeyModal from './components/LicenseKeyModal'; // COMMENTED OUT: Future feature
 import { Button } from './components/ui/button';
@@ -138,6 +139,15 @@ function App() {
         <header className="px-6 py-2 bg-card border-b border-border flex justify-between items-center">
           <div className="flex items-center gap-3">
             <h1 className="text-sm font-medium">SkreenPro v1.0.1</h1>
+            <Button
+              onClick={() => window.open('https://github.com/Uaghazade1/sshot', '_blank')}
+              size="xs"
+              variant="outline"
+              className="gap-2"
+            >
+              <GithubIcon size={16} />
+              Github
+            </Button>
             {/* COMMENTED OUT: Plan badge will be added in future */}
             {/* {userPlan && (
               <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium uppercase">
@@ -146,7 +156,6 @@ function App() {
             )} */}
           </div>
           <div className="flex gap-3 items-center">
-            <span className="text-xs text-muted-foreground">{user.email}</span>
             {/* {userPlan?.plan === 'free' && (
               <Button
                 onClick={() => setShowLicenseModal(true)}
@@ -168,9 +177,7 @@ function App() {
                 Export - 4K
               </Button>
             )}
-            <Button onClick={handleSignOut} size="xs" variant="destructive" className="gap-2">
-              <LogOut size={16} />
-            </Button>
+            <UserMenu userEmail={user.email || 'User'} onSignOut={handleSignOut} />
           </div>
         </header>
 
