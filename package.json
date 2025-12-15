@@ -56,7 +56,7 @@
       "public/**/*"
     ],
     "mac": {
-      "icon": "public/icons/1024-mac.png",
+      "icon": "public/icons/icon.icns",
       "category": "public.app-category.graphics-design",
       "target": [
         "dmg",
