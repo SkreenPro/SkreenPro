@@ -29,7 +29,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Listen for auth changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('Auth state changed:', { event, hasSession: !!session, userId: session?.user?.id });
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
@@ -65,10 +66,40 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      console.error('Error signing out:', error);
-      throw error;
+    try {
+      console.log('SignOut called - clearing all sessions');
+
+      // First, clear React state immediately to update UI
+      setUser(null);
+      setSession(null);
+
+      // Then try to sign out from Supabase
+      const { error } = await supabase.auth.signOut({ scope: 'local' });
+
+      if (error) {
+        console.error('Error signing out from Supabase:', error);
+      }
+
+      // Force clear all Supabase-related localStorage items
+      console.log('Force clearing localStorage');
+      const keysToRemove: string[] = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith('sb-')) {
+          keysToRemove.push(key);
+        }
+      }
+      keysToRemove.forEach(key => {
+        console.log('Removing localStorage key:', key);
+        localStorage.removeItem(key);
+      });
+
+      console.log('SignOut completed - all sessions cleared');
+    } catch (error: any) {
+      console.error('Exception during signOut:', error);
+      // Still clear React state even if error occurs
+      setUser(null);
+      setSession(null);
     }
   };
 

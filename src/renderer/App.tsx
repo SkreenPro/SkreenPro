@@ -3,9 +3,12 @@ import { FolderOpen, Save, LogOut } from 'lucide-react';
 import ImageCanvas from './components/ImageCanvas';
 import EditorControls from './components/EditorControls';
 import LoginScreen from './components/LoginScreen';
+// import PlanSelectionModal from './components/PlanSelectionModal'; // COMMENTED OUT: Future feature
+// import LicenseKeyModal from './components/LicenseKeyModal'; // COMMENTED OUT: Future feature
 import { Button } from './components/ui/button';
 import { EditorSettings } from './types';
 import { useAuth } from './contexts/AuthContext';
+// import { usePlan } from './contexts/PlanContext'; // COMMENTED OUT: Future feature
 import Konva from 'konva';
 
 // Extend Window interface for electronAPI
@@ -20,9 +23,12 @@ declare global {
 
 function App() {
   const { user, loading, signOut } = useAuth();
+  // const { userPlan, selectPlan } = usePlan(); // COMMENTED OUT: Will be used when plans are enabled
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [filename, setFilename] = useState<string>('');
   const stageRef = useRef<Konva.Stage | null>(null);
+  // const [showPlanModal, setShowPlanModal] = useState(false); // COMMENTED OUT: Future feature
+  // const [showLicenseModal, setShowLicenseModal] = useState(false); // COMMENTED OUT: Future feature
   const [settings, setSettings] = useState<EditorSettings>({
     borderWidth: 8,
     borderColor: '#000000',
@@ -33,6 +39,13 @@ function App() {
     shadowPreset: 'medium',
     aspectRatio: null,
   });
+
+  // COMMENTED OUT: Plan selection will be added in future
+  // useEffect(() => {
+  //   if (user && !userPlan) {
+  //     setShowPlanModal(true);
+  //   }
+  // }, [user, userPlan]);
 
   const handleOpenImage = async () => {
     if (window.electronAPI) {
@@ -74,7 +87,23 @@ function App() {
     }
   };
 
-  // Show loading state
+  // COMMENTED OUT: Plan selection handler for future use
+  // const handleSelectPlan = async (plan: 'free' | 'pro') => {
+  //   try {
+  //     if (plan === 'pro') {
+  //       setShowPlanModal(false);
+  //       setShowLicenseModal(true);
+  //     } else {
+  //       await selectPlan(plan);
+  //       setShowPlanModal(false);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error selecting plan:', error);
+  //     alert('Failed to select plan. Please try again.');
+  //   }
+  // };
+
+  // Show loading state (only auth loading, plan loads in background)
   if (loading) {
     return (
       <div className="h-screen flex items-center justify-center bg-background">
@@ -92,28 +121,58 @@ function App() {
   }
 
   return (
-    <div className="h-screen flex flex-col bg-background text-foreground">
-      {/* Header */}
-      <header className="px-6 py-2 bg-card border-b border-border flex justify-between items-center">
-        <h1 className="text-sm font-medium">SkreenPro v1.0.1</h1>
-        <div className="flex gap-3 items-center">
-          <span className="text-xs text-muted-foreground">{user.email}</span>
-          <Button onClick={handleOpenImage} size="xs" variant="outline" className="gap-2">
-            <FolderOpen size={20} />
-            Open Image
-          </Button>
-          {selectedImage && (
-            <Button onClick={handleSaveImage} variant="default" size="xs" className="gap-2">
-              <Save size={18} />
-              Export - 4K
+    <>
+      {/* Modals */}
+      {/* <PlanSelectionModal
+        isOpen={showPlanModal}
+        onClose={() => setShowPlanModal(false)}
+        onSelectPlan={handleSelectPlan}
+      />
+      <LicenseKeyModal
+        isOpen={showLicenseModal}
+        onClose={() => setShowLicenseModal(false)}
+      /> */}
+
+      <div className="h-screen flex flex-col bg-background text-foreground">
+        {/* Header */}
+        <header className="px-6 py-2 bg-card border-b border-border flex justify-between items-center">
+          <div className="flex items-center gap-3">
+            <h1 className="text-sm font-medium">SkreenPro v1.0.1</h1>
+            {/* COMMENTED OUT: Plan badge will be added in future */}
+            {/* {userPlan && (
+              <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium uppercase">
+                {userPlan.plan}
+              </span>
+            )} */}
+          </div>
+          <div className="flex gap-3 items-center">
+            <span className="text-xs text-muted-foreground">{user.email}</span>
+            {/* {userPlan?.plan === 'free' && (
+              <Button
+                onClick={() => setShowLicenseModal(true)}
+                size="xs"
+                variant="default"
+                className="gap-2"
+              >
+                <Key size={16} />
+                Upgrade to Pro
+              </Button>
+            )} */}
+            <Button onClick={handleOpenImage} size="xs" variant="outline" className="gap-2">
+              <FolderOpen size={20} />
+              Open Image
             </Button>
-          )}
-          <Button onClick={handleSignOut} size="xs" variant="destructive" className="gap-2">
-            <LogOut size={16} />
-           
-          </Button>
-        </div>
-      </header>
+            {selectedImage && (
+              <Button onClick={handleSaveImage} variant="default" size="xs" className="gap-2">
+                <Save size={18} />
+                Export - 4K
+              </Button>
+            )}
+            <Button onClick={handleSignOut} size="xs" variant="destructive" className="gap-2">
+              <LogOut size={16} />
+            </Button>
+          </div>
+        </header>
 
       {/* Content */}
       <div className="flex-1 overflow-auto">
@@ -163,7 +222,8 @@ function App() {
           </div>
         )}
       </div>
-    </div>
+      </div>
+    </>
   );
 }
 
