@@ -81,38 +81,48 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signInWithGithub = async () => {
-    // Use custom protocol for Electron, localhost for dev
-    const redirectTo = window.location.protocol === 'file:'
-      ? 'skreenpro://auth/callback'
-      : window.location.origin;
+    const isElectron = window.location.protocol === 'file:';
+    const redirectTo = isElectron ? 'skreenpro://auth/callback' : window.location.origin;
 
-    const { error } = await supabase.auth.signInWithOAuth({
+    const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'github',
       options: {
         redirectTo,
+        skipBrowserRedirect: isElectron, // Don't redirect in app, open in browser instead
       },
     });
+
     if (error) {
       console.error('Error signing in with GitHub:', error);
       throw error;
     }
+
+    // In Electron, open OAuth URL in default browser
+    if (isElectron && data?.url && window.electronAPI?.openExternal) {
+      await window.electronAPI.openExternal(data.url);
+    }
   };
 
   const signInWithGoogle = async () => {
-    // Use custom protocol for Electron, localhost for dev
-    const redirectTo = window.location.protocol === 'file:'
-      ? 'skreenpro://auth/callback'
-      : window.location.origin;
+    const isElectron = window.location.protocol === 'file:';
+    const redirectTo = isElectron ? 'skreenpro://auth/callback' : window.location.origin;
 
-    const { error } = await supabase.auth.signInWithOAuth({
+    const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
         redirectTo,
+        skipBrowserRedirect: isElectron, // Don't redirect in app, open in browser instead
       },
     });
+
     if (error) {
       console.error('Error signing in with Google:', error);
       throw error;
+    }
+
+    // In Electron, open OAuth URL in default browser
+    if (isElectron && data?.url && window.electronAPI?.openExternal) {
+      await window.electronAPI.openExternal(data.url);
     }
   };
 
