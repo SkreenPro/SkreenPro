@@ -62,7 +62,8 @@
       "target": [
         "dmg",
         "zip"
-      ]
+      ],
+      "identity": null
     }
   }
 }
