@@ -39,7 +39,7 @@ function createWindow() {
     minHeight: 600,
     icon: icon,
     webPreferences: {
-      preload: path.join(__dirname, 'src/preload/preload.js'),
+      preload: path.join(__dirname, isDev ? 'src/preload/preload.js' : 'dist/preload/preload.js'),
       nodeIntegration: false,
       contextIsolation: true,
     },
