@@ -1,6 +1,6 @@
 {
-  "name": "sshot",
-  "version": "1.0.0",
+  "name": "SkreenPro",
+  "version": "1.0.1",
   "description": "",
   "main": "electron.js",
   "scripts": {

@@ -143,10 +143,10 @@ function App() {
             <Button
               onClick={async () => {
                 if (window.electronAPI?.openExternal) {
-                  await window.electronAPI.openExternal('https://github.com/Uaghazade1/sshot');
+                  await window.electronAPI.openExternal('https://github.com/Uaghazade1/SkreenPro');
                 } else {
                   console.error('electronAPI.openExternal not available');
-                  window.open('https://github.com/Uaghazade1/sshot', '_blank');
+                  window.open('https://github.com/Uaghazade1/SkreenPro', '_blank');
                 }
               }}
               size="xs"
