@@ -29,8 +29,8 @@ A powerful, beautiful screenshot editor built with Electron, React, and Konva. E
 ## Download
 
 Download the latest release for macOS:
-- [SkreenPro-1.0.1-arm64.dmg](https://github.com/yourusername/skreenpro/releases) (Apple Silicon)
-- [SkreenPro-1.0.1-arm64-mac.zip](https://github.com/yourusername/skreenpro/releases) (Apple Silicon - ZIP)
+- [SkreenPro-1.0.1-arm64.dmg](https://github.com/SkreenPro/SkreenPro/releases) (Apple Silicon)
+- [SkreenPro-1.0.1-arm64-mac.zip](https://github.com/SkreenPro/SkreenPro/releases) (Apple Silicon - ZIP)
 
 ## Installation
 
