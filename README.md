@@ -219,4 +219,4 @@ If you encounter any issues or have questions:
 
 ---
 
-Made with ❤️ by [uaghazadae](https://x.com/uaghazade)
+Made with ❤️ by [uaghazadae](https://x.com/uaghazadae)
