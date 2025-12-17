@@ -2,7 +2,7 @@
 
 A powerful, beautiful screenshot editor built with Electron, React, and Konva. Edit your screenshots with professional tools including backgrounds, shadows, borders, and more.
 
-![SkreenPro](public/icons/512-mac_converted.png)
+![SkreenPro]([public/icons/512-mac_converted.png](https://youtu.be/X2Qh-8EOp80))
 
 ## Features
 
